@@ -1,16 +1,19 @@
 # Brief: TEST-1234
 
 ## Customer
-<!-- Organization name, environment, tier -->
+Acme Corp, production environment, Enterprise tier
 
 ## Problem
-<!-- 2-3 sentences: what the customer reported -->
+After running a bulk contact import of ~5,000 records, customer reports seeing duplicate contacts. Some contacts appear 2-3 times. Problem is worse when imports are retried after partial failures.
 
 ## Impact
-<!-- Scope: how many users/records affected, business impact -->
+~800 duplicate records created across 3 import batches. Customer's sales team is seeing duplicate entries in their pipeline and sending duplicate outreach emails.
 
 ## Relevant Code Paths
-<!-- Specific directories/files in REPOS/ to investigate -->
+REPOS/acme-crm/src/sync/bulk-import.js
+REPOS/acme-crm/src/sync/queue.js
+REPOS/acme-crm/src/api/import-controller.js
+REPOS/acme-crm/src/models/contact.js
 
 ## Initial Hypothesis
-<!-- Best guess based on the ticket alone -->
+Bulk import may not be using atomic upserts, causing race conditions when concurrent workers process overlapping records.

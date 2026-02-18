@@ -1,1 +1,6 @@
-status:investigating
+status:root-cause-identified
+root-cause:race-condition
+root-cause:data-integrity
+area:worker
+area:database
+severity:high
