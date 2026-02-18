@@ -24,7 +24,7 @@ Parse $ARGUMENTS: the first word is the ticket-id, everything after is the sourc
    - Write the evidence file to PROJECTS/$TICKET_ID/EVIDENCE/NNN-<slug>.md
 6. After writing evidence:
    - Update STATUS.md: add a history entry, update open questions if the evidence changes them
-   - If the evidence significantly changes the picture, note it in STATUS.md's hypothesis section
+   - If the evidence significantly changes the picture, update STATUS.md's Current Understanding section
 7. Tell the human what was recorded and suggest the next data point to collect
 
 ## Rules

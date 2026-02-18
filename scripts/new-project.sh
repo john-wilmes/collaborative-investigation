@@ -32,7 +32,7 @@ sed "s/{{TICKET_ID}}/$TICKET_ID/g" "$SCHEMAS_DIR/findings.template.md" > "$PROJE
 cat > "$PROJECT_DIR/STATUS.md" << EOF
 # Status: $TICKET_ID
 
-## Current Hypothesis
+## Current Understanding
 <!-- Updated after each session -->
 
 ## Open Questions

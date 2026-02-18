@@ -4,7 +4,8 @@
 <!-- Who/what triggered this investigation? Customer, team, ticket, or curiosity. -->
 
 ## Question
-<!-- 2-3 sentences: what are we trying to find out? -->
+<!-- What are we trying to find out? 2-3 sentences, or a numbered list
+     if the investigation has multiple related questions. -->
 
 ## Scope
 <!-- What's affected or at stake? Could be users, records, understanding, or a decision. -->

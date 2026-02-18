@@ -8,4 +8,4 @@
 <!-- 3 lines max. What did the data show? -->
 
 ## Relevance
-<!-- How does this connect to the current hypothesis? Supports/contradicts/neutral -->
+<!-- How does this connect to the current understanding? Supports/contradicts/neutral/new-info -->
