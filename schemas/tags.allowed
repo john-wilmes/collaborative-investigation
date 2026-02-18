@@ -6,6 +6,10 @@ root-cause:auth-failure
 root-cause:integration-break
 root-cause:performance
 root-cause:resource-exhaustion
+root-cause:cache-invalidation
+root-cause:security-incident
+root-cause:user-error
+root-cause:dependency-failure
 
 # Area
 area:api
@@ -14,6 +18,10 @@ area:database
 area:auth
 area:billing
 area:ui
+area:integration
+area:scheduler
+area:reporting
+area:migration
 
 # Severity
 severity:critical
@@ -26,3 +34,5 @@ status:investigating
 status:root-cause-identified
 status:resolved
 status:escalated
+status:waiting-on-customer
+status:not-a-bug

@@ -50,13 +50,14 @@ EOF
 # Create empty .tags with status
 echo "status:investigating" > "$PROJECT_DIR/.tags"
 
-# Create git branch
+# Create git branch (redirect stderr to stdout -- git checkout writes
+# success messages to stderr which causes false failures on Windows Git)
 cd "$ROOT_DIR"
-git checkout -b "inv/$TICKET_ID" 2>/dev/null || git checkout "inv/$TICKET_ID"
+git checkout -b "inv/$TICKET_ID" 2>&1 || git checkout "inv/$TICKET_ID" 2>&1
 
 echo "Created investigation project: $PROJECT_DIR"
 echo "Branch: inv/$TICKET_ID"
 echo ""
 echo "Next steps:"
 echo "  1. Fill in PROJECTS/$TICKET_ID/BRIEF.md (10 lines max)"
-echo "  2. Run /collect to start gathering evidence"
+echo "  2. Run /collect $TICKET_ID to start gathering evidence"

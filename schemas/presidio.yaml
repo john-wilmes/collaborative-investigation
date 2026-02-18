@@ -8,7 +8,7 @@ analyzer:
   # Built-in Presidio recognizers to enable
   recognizers:
     - PERSON           # Patient names -> [PATIENT_NAME]
-    - DATE_TIME        # Dates of birth -> [DOB] (context-aware)
+    - DATE_TIME        # General dates -> [DATE] (investigation timestamps kept readable)
     - US_SSN           # Social Security Numbers -> [SSN]
     - PHONE_NUMBER     # Patient phone numbers -> [PHONE]
     - EMAIL_ADDRESS    # Patient email addresses -> [EMAIL]
@@ -29,6 +29,22 @@ analyzer:
         - medical record
         - patient id
 
+    # Context-aware date of birth detection
+    # Only scrub dates that appear near birth-related keywords
+    # General dates (incident timestamps, log dates) are left as [DATE]
+    - name: ContextualDOB
+      supported_entity: DOB
+      patterns:
+        - name: labeled_dob
+          regex: "(?i)(?:DOB|date of birth|born on|birth date|birthdate)[:\\s]+\\d{1,2}[/\\-]\\d{1,2}[/\\-]\\d{2,4}"
+          score: 0.95
+      context:
+        - dob
+        - date of birth
+        - born
+        - birth date
+        - birthdate
+
   # Entities to SKIP (keep in output)
   deny_list_entities: []
 
@@ -42,6 +58,9 @@ anonymizer:
       type: replace
       new_value: "[PATIENT_NAME]"
     DATE_TIME:
+      type: replace
+      new_value: "[DATE]"
+    DOB:
       type: replace
       new_value: "[DOB]"
     US_SSN:

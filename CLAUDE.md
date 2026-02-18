@@ -20,9 +20,9 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 | Command | Purpose |
 |---------|---------|
 | `/investigate <ticket>` | Start new investigation, create project from template |
-| `/collect <source>` | Structured evidence gathering (one item per invocation) |
-| `/synthesize` | Condense evidence into findings, update hypothesis |
-| `/close` | Finalize, sanitize, push branch |
+| `/collect <ticket> <source>` | Structured evidence gathering (one item per invocation) |
+| `/synthesize <ticket>` | Condense evidence into findings, update hypothesis |
+| `/close <ticket>` | Finalize, sanitize, push branch |
 
 ## Token Discipline
 
@@ -36,7 +36,7 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 
 ## PHI Sanitization
 
-Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. MRNs scrubbed only when labeled in context (e.g., "MRN: 12345"), not bare IDs.
+Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. `[DOB]` only fires near birth-related keywords; general dates become `[DATE]`. Customer/org info is kept -- only patient data is scrubbed. MRNs scrubbed only when labeled in context (e.g., "MRN: 12345"), not bare IDs. Pre-commit also rejects STATUS.md and EVIDENCE/ files from staging.
 
 ## What Gets Pushed
 

@@ -4,21 +4,23 @@ description: Synthesize collected evidence into findings
 user-invocable: true
 ---
 
-# /synthesize
+# /synthesize $ARGUMENTS
 
 Condense all collected evidence into FINDINGS.md and update the investigation status.
 
+$ARGUMENTS is the ticket-id.
+
 ## Steps
 
-1. Find the active investigation: look for PROJECTS/*/STATUS.md where .tags contains "status:investigating" or "status:root-cause-identified"
-2. Read the project's BRIEF.md, STATUS.md, and all evidence files in EVIDENCE/
+1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/STATUS.md, PROJECTS/$TICKET_ID/BRIEF.md, and PROJECTS/$TICKET_ID/.tags. If they do not exist, tell the human and stop.
+2. Read all evidence files in PROJECTS/$TICKET_ID/EVIDENCE/
 3. Read schemas/findings.template.md for the output format
 4. Analyze the evidence:
    - Identify which evidence items support/contradict the current hypothesis
    - Look for patterns across evidence items
    - Determine if the root cause is clear or if more evidence is needed
 5. If root cause is identified:
-   - Write FINDINGS.md using the template
+   - Write PROJECTS/$TICKET_ID/FINDINGS.md using the template
    - Update .tags: change status to "status:root-cause-identified" and add appropriate root-cause and area tags
    - Update STATUS.md: record synthesis in history, clear open questions that are answered
 6. If root cause is NOT clear:
