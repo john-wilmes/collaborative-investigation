@@ -14,7 +14,8 @@ $ARGUMENTS is the ticket-id.
 
 1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, and PROJECTS/$TICKET_ID/STATUS.md. If they do not exist, tell the human and stop.
 2. Validate completeness:
-   - FINDINGS.md must have Question, Answer, and Evidence Summary filled in (not just template placeholders)
+   - FINDINGS.md must have Question and Answer filled in (not just template placeholders)
+   - Evidence Summary should be filled in. If the investigation is being closed without evidence (answered without data collection, or abandoned), the investigator should put "N/A" or a brief explanation in Evidence Summary.
    - If incomplete, tell the human what is missing and stop
 3. Run the classifier: use the Task tool to spawn a Haiku subagent with this prompt:
 
@@ -46,8 +47,8 @@ $ARGUMENTS is the ticket-id.
    - The pre-commit hook will run PHI sanitization and re-stage automatically
 9. Post-commit verification: read the committed FINDINGS.md via `git show HEAD:PROJECTS/$TICKET_ID/FINDINGS.md`. Confirm that Question, Answer, and Classification sections each contain at least one non-placeholder sentence. If sanitization degraded the content, warn the human.
 10. Push the inv/$TICKET_ID branch to origin
-    - If push fails, report the exact error to the human and stop
-    - The human can push manually with: git push -u origin inv/$TICKET_ID
+    - If push fails due to non-fast-forward (another investigator updated the branch), tell the human: "The remote branch has diverged. Run `git fetch origin inv/$TICKET_ID` and `git log origin/inv/$TICKET_ID..HEAD` to see what changed. Coordinate with the other investigator before rebasing or force-pushing."
+    - For other push failures, report the exact error to the human and stop
 11. Report the branch name and suggest creating a PR or /reopen later if needed
 
 ## Rules

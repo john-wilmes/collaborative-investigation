@@ -20,7 +20,7 @@ $ARGUMENTS is the ticket-id.
    - What does the evidence show? Identify patterns, confirmations, contradictions
    - Is there a clear answer, or are there gaps?
 5. If the answer is clear:
-   - Write PROJECTS/$TICKET_ID/FINDINGS.md using the template (leave Classification section empty -- it is written at /close time)
+   - Overwrite the entire PROJECTS/$TICKET_ID/FINDINGS.md using the template. Any prior Classification text will be cleared -- it gets rewritten at /close time.
    - Update STATUS.md: record synthesis in history, note what was answered
 6. If the answer is NOT clear:
    - Write a partial FINDINGS.md noting what is known so far
