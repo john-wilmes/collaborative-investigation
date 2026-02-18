@@ -38,9 +38,9 @@ $ARGUMENTS is the ticket-id.
 4. Take the classifier's output and write it into the Classification section of PROJECTS/$TICKET_ID/FINDINGS.md
 5. Present the classification to the investigator. Ask: does this look right, or do you want to edit it?
 6. After investigator approves (or edits):
-   - Stage PROJECTS/$TICKET_ID/BRIEF.md and PROJECTS/$TICKET_ID/FINDINGS.md
+   - Update STATUS.md: add final history entry with "Closed" phase
+   - Stage PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, and PROJECTS/$TICKET_ID/STATUS.md
    - Do NOT stage EVIDENCE/ (gitignored, enforced by pre-commit hook)
-   - Do NOT stage STATUS.md (local working notes, enforced by pre-commit hook)
 7. Get the ticket-id from the branch name: `git rev-parse --abbrev-ref HEAD`, strip the "inv/" prefix. If it does not match $TICKET_ID, warn the human.
 8. Commit with message: "investigation: $TICKET_ID - <one-line summary of the answer from FINDINGS.md>"
    - The pre-commit hook will run PHI sanitization and re-stage automatically
@@ -48,11 +48,10 @@ $ARGUMENTS is the ticket-id.
 10. Push the inv/$TICKET_ID branch to origin
     - If push fails, report the exact error to the human and stop
     - The human can push manually with: git push -u origin inv/$TICKET_ID
-11. Update STATUS.md: add final history entry. This happens AFTER successful push.
-12. Report the branch name and suggest creating a PR if the team uses that workflow
+11. Report the branch name and suggest creating a PR or /reopen later if needed
 
 ## Rules
 - Never push without the pre-commit hook running (no --no-verify)
-- The commit includes BRIEF.md and FINDINGS.md only
-- STATUS.md and EVIDENCE/ stay local
+- The commit includes BRIEF.md, FINDINGS.md, and STATUS.md
+- EVIDENCE/ stays local (gitignored)
 - The classifier's output can be overridden by the investigator -- they have final say

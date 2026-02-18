@@ -2,8 +2,8 @@
 set -eu
 
 # Pre-commit hook for collaborative-investigation.
-# 1. Rejects local-only files (STATUS.md, EVIDENCE/) from staging
-# 2. Runs PHI sanitization on staged BRIEF.md and FINDINGS.md files
+# 1. Rejects EVIDENCE/ files from staging (local-only raw data)
+# 2. Runs PHI sanitization on staged BRIEF.md, FINDINGS.md, and STATUS.md files
 #
 # Install: copy to .git/hooks/pre-commit or run:
 #   git config core.hooksPath .githooks
@@ -17,15 +17,15 @@ STAGED_FILES="$(git diff --cached --name-only --diff-filter=ACM)"
 # --- Local-Only File Guard ---
 for file in $STAGED_FILES; do
     case "$file" in
-        */STATUS.md|*/EVIDENCE/*)
-            echo "Error: $file must not be committed (local-only file)" >&2
+        */EVIDENCE/*)
+            echo "Error: $file must not be committed (local-only raw data)" >&2
             EXIT_CODE=1
             ;;
     esac
 done
 
 if [ "$EXIT_CODE" -ne 0 ]; then
-    echo "Unstage local-only files before committing." >&2
+    echo "Unstage EVIDENCE/ files before committing." >&2
     exit $EXIT_CODE
 fi
 
@@ -33,7 +33,7 @@ fi
 SANITIZE_FILES=""
 for file in $STAGED_FILES; do
     case "$file" in
-        */BRIEF.md|*/FINDINGS.md)
+        */BRIEF.md|*/FINDINGS.md|*/STATUS.md)
             SANITIZE_FILES="$SANITIZE_FILES $ROOT_DIR/$file"
             ;;
     esac

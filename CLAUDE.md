@@ -8,21 +8,16 @@ Git-based framework for SaaS technical teams to run structured investigations as
 
 State in files, not in conversations. Agents are stateless workers. They read structured files, do one thing, write structured output, and exit. No long conversations, no multi-phase sessions.
 
-## Key Commands
-
-```
-scripts/new-project.sh <ticket-id>    # Create investigation from template
-git commit                             # Auto-sanitizes PHI via pre-commit hook
-```
-
-## Slash Commands
+## Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/investigate <ticket>` | Start new investigation, create project from template |
+| `scripts/new-project.sh <ticket>` | Create investigation from template |
+| `/investigate <ticket>` | Start new investigation (runs new-project.sh) |
 | `/collect <ticket> <source>` | Structured evidence gathering (one item per invocation) |
 | `/synthesize <ticket>` | Condense evidence into findings |
 | `/close <ticket>` | Classify, sanitize, push branch |
+| `/reopen <ticket>` | Resume a closed investigation |
 
 ## Token Discipline
 
@@ -40,11 +35,11 @@ At `/close` time, a Haiku classifier reads all project files and writes a natura
 
 ## PHI Sanitization
 
-Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. Pre-commit also rejects STATUS.md and EVIDENCE/ files from staging.
+Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio on BRIEF.md, FINDINGS.md, and STATUS.md. Replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. Pre-commit rejects EVIDENCE/ files from staging.
 
 ## What Gets Pushed
 
-`inv/<ticket-id>` branches containing BRIEF.md and FINDINGS.md. EVIDENCE/ stays local (gitignored).
+`inv/<ticket-id>` branches containing BRIEF.md, FINDINGS.md, and STATUS.md. EVIDENCE/ stays local (gitignored). Closed investigations can be reopened with `/reopen`.
 
 ## Commit Rules
 
