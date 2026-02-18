@@ -1,41 +1,58 @@
 ---
-allowed-tools: Bash, Read, Write, Glob, Grep
+allowed-tools: Bash, Read, Write, Glob, Grep, Task
 description: Finalize investigation and push to GitHub
 user-invocable: true
 ---
 
 # /close $ARGUMENTS
 
-Finalize the investigation, ensure PHI is sanitized, and push the branch.
+Finalize the investigation, classify it, ensure PHI is sanitized, and push the branch.
 
 $ARGUMENTS is the ticket-id.
 
 ## Steps
 
-1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, PROJECTS/$TICKET_ID/STATUS.md, and PROJECTS/$TICKET_ID/.tags. If they do not exist, tell the human and stop.
+1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, and PROJECTS/$TICKET_ID/STATUS.md. If they do not exist, tell the human and stop.
 2. Validate completeness:
    - FINDINGS.md must have Root Cause, Evidence Summary, and Resolution filled in (not just template placeholders)
-   - .tags must include at least one tag from each required category. Check with:
-     - `grep "^root-cause:" PROJECTS/$TICKET_ID/.tags` -- must return at least one line
-     - `grep "^area:" PROJECTS/$TICKET_ID/.tags` -- must return at least one line
-     - `grep "^severity:" PROJECTS/$TICKET_ID/.tags` -- must return at least one line
    - If incomplete, tell the human what is missing and stop
-3. Stage the files that get pushed: PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, PROJECTS/$TICKET_ID/.tags
-   - Do NOT stage EVIDENCE/ (gitignored, but also enforced by pre-commit hook)
+3. Run the classifier: use the Task tool to spawn a Haiku subagent with this prompt:
+
+   "You are a classification agent. Read the investigation files and write a natural language classification for the Classification section of FINDINGS.md.
+
+   Read these files:
+   - PROJECTS/$TICKET_ID/BRIEF.md
+   - PROJECTS/$TICKET_ID/FINDINGS.md
+   - All files in PROJECTS/$TICKET_ID/EVIDENCE/
+   - PROJECTS/$TICKET_ID/STATUS.md
+
+   Write exactly 3-5 sentences covering:
+   - Root cause category (e.g., race condition, data integrity, auth failure, config drift, integration failure, resource exhaustion, caching bug, user error, security incident, dependency failure -- use whatever fits, not a fixed list)
+   - Affected systems and components
+   - Failure pattern (one-time, recurring, latent, triggered by specific conditions)
+   - Severity assessment with justification (how many users/records affected, business impact, data loss vs inconvenience)
+   - Contributing factors beyond the primary root cause
+
+   Write in plain English for a teammate reading this cold. Be specific, not generic. Return ONLY the 3-5 sentences, nothing else."
+
+4. Take the classifier's output and write it into the Classification section of PROJECTS/$TICKET_ID/FINDINGS.md
+5. Present the classification to the investigator. Ask: does this look right, or do you want to edit it?
+6. After investigator approves (or edits):
+   - Stage PROJECTS/$TICKET_ID/BRIEF.md and PROJECTS/$TICKET_ID/FINDINGS.md
+   - Do NOT stage EVIDENCE/ (gitignored, enforced by pre-commit hook)
    - Do NOT stage STATUS.md (local working notes, enforced by pre-commit hook)
-4. Get the ticket-id from the branch name: `git rev-parse --abbrev-ref HEAD`, strip the "inv/" prefix. If it does not match $TICKET_ID, warn the human.
-5. Update .tags: set status to "status:resolved". Re-stage .tags.
-6. Commit with message: "investigation: $TICKET_ID - <one-line root cause summary from FINDINGS.md>"
+7. Get the ticket-id from the branch name: `git rev-parse --abbrev-ref HEAD`, strip the "inv/" prefix. If it does not match $TICKET_ID, warn the human.
+8. Commit with message: "investigation: $TICKET_ID - <one-line root cause summary from FINDINGS.md>"
    - The pre-commit hook will run PHI sanitization and re-stage automatically
-7. Post-commit verification: read the committed FINDINGS.md via `git show HEAD:PROJECTS/$TICKET_ID/FINDINGS.md`. Confirm that Root Cause, Evidence Summary, and Resolution sections each contain at least one non-placeholder sentence (not just [PATIENT_NAME], [DATE], etc.). If sanitization degraded the content, warn the human and provide the pre-sanitization text for them to rewrite.
-8. Push the inv/$TICKET_ID branch to origin
-   - If push fails, report the exact error to the human and stop
-   - Do NOT proceed to step 9 until push succeeds
-   - The human can push manually with: git push -u origin inv/$TICKET_ID
-9. Update STATUS.md: add final history entry with resolution summary. This happens AFTER successful push so STATUS.md does not claim "resolved" if the branch never left the local machine.
-10. Report the branch name and suggest creating a PR if the team uses that workflow
+9. Post-commit verification: read the committed FINDINGS.md via `git show HEAD:PROJECTS/$TICKET_ID/FINDINGS.md`. Confirm that Root Cause, Evidence Summary, Resolution, and Classification sections each contain at least one non-placeholder sentence. If sanitization degraded the content, warn the human.
+10. Push the inv/$TICKET_ID branch to origin
+    - If push fails, report the exact error to the human and stop
+    - The human can push manually with: git push -u origin inv/$TICKET_ID
+11. Update STATUS.md: add final history entry with resolution summary. This happens AFTER successful push.
+12. Report the branch name and suggest creating a PR if the team uses that workflow
 
 ## Rules
 - Never push without the pre-commit hook running (no --no-verify)
-- The commit must include BRIEF.md, FINDINGS.md, and .tags only
+- The commit includes BRIEF.md and FINDINGS.md only
 - STATUS.md and EVIDENCE/ stay local
+- The classifier's output can be overridden by the investigator -- they have final say

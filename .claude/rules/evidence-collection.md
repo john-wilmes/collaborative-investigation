@@ -11,7 +11,7 @@ When creating or editing evidence files:
 3. The slug should be 2-3 lowercase words separated by hyphens describing the evidence
 4. Observation section is 3 lines MAX -- be precise, not narrative
 5. Relevance must state whether evidence supports, contradicts, or is neutral to the current hypothesis
-6. Tags must come from schemas/tags.allowed
-7. Never include raw patient PHI -- use placeholders if referencing patient data
-8. Source must be specific: include exact query, URL, file:line, or dashboard name
-9. One evidence file per data point -- do not combine multiple observations
+6. Never include raw patient PHI -- use placeholders if referencing patient data
+7. Source must be specific: include exact query, URL, file:line, or dashboard name
+8. One evidence file per data point -- do not combine multiple observations
+9. For code review evidence, use commit SHA or "HEAD as of YYYY-MM-DD" for the Timestamp field

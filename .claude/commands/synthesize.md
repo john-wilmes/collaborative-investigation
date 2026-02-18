@@ -12,7 +12,7 @@ $ARGUMENTS is the ticket-id.
 
 ## Steps
 
-1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/STATUS.md, PROJECTS/$TICKET_ID/BRIEF.md, and PROJECTS/$TICKET_ID/.tags. If they do not exist, tell the human and stop.
+1. Set TICKET_ID to $ARGUMENTS. Read PROJECTS/$TICKET_ID/STATUS.md, PROJECTS/$TICKET_ID/BRIEF.md. If they do not exist, tell the human and stop.
 2. Read all evidence files in PROJECTS/$TICKET_ID/EVIDENCE/
 3. Read schemas/findings.template.md for the output format
 4. Analyze the evidence:
@@ -20,8 +20,7 @@ $ARGUMENTS is the ticket-id.
    - Look for patterns across evidence items
    - Determine if the root cause is clear or if more evidence is needed
 5. If root cause is identified:
-   - Write PROJECTS/$TICKET_ID/FINDINGS.md using the template
-   - Update .tags: change status to "status:root-cause-identified" and add appropriate root-cause and area tags
+   - Write PROJECTS/$TICKET_ID/FINDINGS.md using the template (leave Classification section empty -- it is written at /close time)
    - Update STATUS.md: record synthesis in history, clear open questions that are answered
 6. If root cause is NOT clear:
    - Write a partial FINDINGS.md noting what is known so far
@@ -34,3 +33,4 @@ $ARGUMENTS is the ticket-id.
 - Reference evidence by number (e.g., "Evidence 003 shows...")
 - Keep customer/org names, sanitize patient PHI
 - This is analysis, not data collection -- do not ask the human for new data here
+- Do NOT write the Classification section -- that happens at /close time

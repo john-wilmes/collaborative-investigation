@@ -15,3 +15,4 @@ When writing or updating FINDINGS.md:
 7. Patient PHI will be auto-sanitized on commit -- but avoid including it when possible
 8. Customer/org names should be kept -- they are essential investigation context
 9. This file gets pushed to GitHub on inv/* branches -- write for your teammates
+10. Do NOT write the Classification section -- it is written by the classifier agent at /close time

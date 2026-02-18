@@ -15,3 +15,8 @@
 
 ## Prevention
 <!-- Recommended changes to prevent recurrence -->
+
+## Classification
+<!-- Written by classifier agent at close time. Do not edit manually.
+     Covers: root cause category, affected systems, failure pattern,
+     severity assessment, contributing factors. Natural language, 3-5 sentences. -->

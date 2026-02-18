@@ -22,7 +22,7 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 | `/investigate <ticket>` | Start new investigation, create project from template |
 | `/collect <ticket> <source>` | Structured evidence gathering (one item per invocation) |
 | `/synthesize <ticket>` | Condense evidence into findings, update hypothesis |
-| `/close <ticket>` | Finalize, sanitize, push branch |
+| `/close <ticket>` | Classify, sanitize, push branch |
 
 ## Token Discipline
 
@@ -34,13 +34,17 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 - One slash command = one phase = one session
 - Agents never free-explore REPOS/ -- BRIEF.md scopes them to specific paths
 
+## Classification
+
+At `/close` time, a Haiku classifier agent reads all project files and writes a natural language classification into the Classification section of FINDINGS.md. No fixed taxonomy -- the classifier describes root cause category, affected systems, failure pattern, severity, and contributing factors in plain English. Investigator approves or overrides. Prior art search across investigations is done by agents reading FINDINGS.md, not by filtering tags.
+
 ## PHI Sanitization
 
 Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. `[DOB]` only fires near birth-related keywords; general dates become `[DATE]`. Customer/org info is kept -- only patient data is scrubbed. MRNs scrubbed only when labeled in context (e.g., "MRN: 12345"), not bare IDs. Pre-commit also rejects STATUS.md and EVIDENCE/ files from staging.
 
 ## What Gets Pushed
 
-`inv/<ticket-id>` branches containing BRIEF.md, FINDINGS.md, and .tags. EVIDENCE/ stays local (gitignored).
+`inv/<ticket-id>` branches containing BRIEF.md and FINDINGS.md. EVIDENCE/ stays local (gitignored).
 
 ## Commit Rules
 

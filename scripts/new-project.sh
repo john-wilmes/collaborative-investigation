@@ -47,9 +47,6 @@ cat > "$PROJECT_DIR/STATUS.md" << EOF
 | $(date +%Y-%m-%d) | init | Project created from template |
 EOF
 
-# Create empty .tags with status
-echo "status:investigating" > "$PROJECT_DIR/.tags"
-
 # Create git branch (redirect stderr to stdout -- git checkout writes
 # success messages to stderr which causes false failures on Windows Git)
 cd "$ROOT_DIR"

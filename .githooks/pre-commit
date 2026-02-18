@@ -4,13 +4,11 @@ set -eu
 # Pre-commit hook for collaborative-investigation.
 # 1. Rejects local-only files (STATUS.md, EVIDENCE/) from staging
 # 2. Runs PHI sanitization on staged BRIEF.md and FINDINGS.md files
-# 3. Validates .tags files against schemas/tags.allowed
 #
 # Install: copy to .git/hooks/pre-commit or run:
 #   git config core.hooksPath .githooks
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
-TAGS_ALLOWED="$ROOT_DIR/schemas/tags.allowed"
 SANITIZE_SCRIPT="$ROOT_DIR/scripts/sanitize.sh"
 
 EXIT_CODE=0
@@ -49,29 +47,5 @@ if [ -n "$SANITIZE_FILES" ] && [ -x "$SANITIZE_SCRIPT" ]; then
         git add "$file"
     done
 fi
-
-# --- Tags Validation ---
-for staged_file in $STAGED_FILES; do
-    case "$staged_file" in
-        *.tags) ;;
-        *) continue ;;
-    esac
-
-    FULL_PATH="$ROOT_DIR/$staged_file"
-    if [ ! -f "$FULL_PATH" ]; then
-        continue
-    fi
-
-    while IFS= read -r tag; do
-        tag="$(echo "$tag" | tr -d ' ')"
-        [ -z "$tag" ] && continue
-
-        if ! grep -qxF "$tag" "$TAGS_ALLOWED"; then
-            echo "Error: Invalid tag '$tag' in $staged_file" >&2
-            echo "Allowed tags are listed in schemas/tags.allowed" >&2
-            EXIT_CODE=1
-        fi
-    done < "$FULL_PATH"
-done
 
 exit $EXIT_CODE
