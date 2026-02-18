@@ -1,22 +1,20 @@
 # Findings: {{TICKET_ID}}
 
-## Root Cause
-<!-- 2-3 sentences: what went wrong and why -->
+## Question
+<!-- What were we trying to find out? -->
+
+## Answer
+<!-- What we learned. Structured prose, as detailed as needed. -->
 
 ## Evidence Summary
-<!-- Numbered list of key evidence items that support the root cause -->
+<!-- Numbered list of key evidence items that support the answer -->
 1.
 
-## Impact Assessment
-<!-- Scope of the issue: affected customers, records, timeframe -->
-
-## Resolution
-<!-- What was done or needs to be done to fix it -->
-
-## Prevention
-<!-- Recommended changes to prevent recurrence -->
+## Implications
+<!-- What this means for the team. Could be a fix, a design doc,
+     a "this is fine", or "we need to investigate further" -->
 
 ## Classification
 <!-- Written by classifier agent at close time. Do not edit manually.
-     Covers: root cause category, affected systems, failure pattern,
-     severity assessment, contributing factors. Natural language, 3-5 sentences. -->
+     Describes the type of investigation, what was learned, affected systems,
+     and significance. Natural language, 3-5 sentences. -->

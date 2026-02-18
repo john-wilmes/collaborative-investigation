@@ -1,16 +1,16 @@
 # Brief: {{TICKET_ID}}
 
-## Customer
-<!-- Organization name, environment, tier -->
+## Context
+<!-- Who/what triggered this investigation? Customer, team, ticket, or curiosity. -->
 
-## Problem
-<!-- 2-3 sentences: what the customer reported -->
+## Question
+<!-- 2-3 sentences: what are we trying to find out? -->
 
-## Impact
-<!-- Scope: how many users/records affected, business impact -->
+## Scope
+<!-- What's affected or at stake? Could be users, records, understanding, or a decision. -->
 
 ## Relevant Code Paths
 <!-- Specific directories/files in REPOS/ to investigate -->
 
-## Initial Hypothesis
-<!-- Best guess based on the ticket alone -->
+## Starting Point
+<!-- What we already know or suspect. Best guess, known constraints, prior art. -->

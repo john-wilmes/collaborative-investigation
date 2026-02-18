@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Git-based framework for SaaS technical teams to run structured investigations of customer-reported issues, assisted by lightweight AI agents (Sonnet, Composer 1.5). The SaaS is an adjunct to many EHRs. Zero runtime dependencies beyond Presidio for PHI sanitization.
+Git-based framework for SaaS technical teams to run structured investigations assisted by lightweight AI agents (Sonnet, Haiku). Investigations can be anything: incident root-cause analysis, understanding how a system works, mapping an integration, or answering a technical question. The SaaS is an adjunct to many EHRs. Zero runtime dependencies beyond Presidio for PHI sanitization.
 
 ## Core Principle
 
@@ -21,14 +21,14 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 |---------|---------|
 | `/investigate <ticket>` | Start new investigation, create project from template |
 | `/collect <ticket> <source>` | Structured evidence gathering (one item per invocation) |
-| `/synthesize <ticket>` | Condense evidence into findings, update hypothesis |
+| `/synthesize <ticket>` | Condense evidence into findings |
 | `/close <ticket>` | Classify, sanitize, push branch |
 
 ## Token Discipline
 
 - CLAUDE.md must stay under 50 lines of rules
 - `.claude/rules/` files use glob patterns to load only when relevant
-- BRIEF.md is 10 lines max (human distills the ticket)
+- BRIEF.md is 10 lines max (human distills the question)
 - STATUS.md is the investigation log and handoff mechanism
 - Evidence files use templates with 3-line observation max
 - One slash command = one phase = one session
@@ -36,11 +36,11 @@ git commit                             # Auto-sanitizes PHI via pre-commit hook
 
 ## Classification
 
-At `/close` time, a Haiku classifier agent reads all project files and writes a natural language classification into the Classification section of FINDINGS.md. No fixed taxonomy -- the classifier describes root cause category, affected systems, failure pattern, severity, and contributing factors in plain English. Investigator approves or overrides. Prior art search across investigations is done by agents reading FINDINGS.md, not by filtering tags.
+At `/close` time, a Haiku classifier reads all project files and writes a natural language classification into FINDINGS.md. No fixed taxonomy -- the classifier describes what kind of investigation it was, what was learned, which systems were involved, the significance, and open threads. Investigator approves or overrides. Prior art search is done by agents reading FINDINGS.md across branches.
 
 ## PHI Sanitization
 
-Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. `[DOB]` only fires near birth-related keywords; general dates become `[DATE]`. Customer/org info is kept -- only patient data is scrubbed. MRNs scrubbed only when labeled in context (e.g., "MRN: 12345"), not bare IDs. Pre-commit also rejects STATUS.md and EVIDENCE/ files from staging.
+Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. Pre-commit also rejects STATUS.md and EVIDENCE/ files from staging.
 
 ## What Gets Pushed
 

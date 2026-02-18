@@ -16,16 +16,16 @@ $ARGUMENTS is the ticket-id.
 2. Read all evidence files in PROJECTS/$TICKET_ID/EVIDENCE/
 3. Read schemas/findings.template.md for the output format
 4. Analyze the evidence:
-   - Identify which evidence items support/contradict the current hypothesis
-   - Look for patterns across evidence items
-   - Determine if the root cause is clear or if more evidence is needed
-5. If root cause is identified:
+   - What question was the investigation trying to answer? (from BRIEF.md)
+   - What does the evidence show? Identify patterns, confirmations, contradictions
+   - Is there a clear answer, or are there gaps?
+5. If the answer is clear:
    - Write PROJECTS/$TICKET_ID/FINDINGS.md using the template (leave Classification section empty -- it is written at /close time)
-   - Update STATUS.md: record synthesis in history, clear open questions that are answered
-6. If root cause is NOT clear:
+   - Update STATUS.md: record synthesis in history, note what was answered
+6. If the answer is NOT clear:
    - Write a partial FINDINGS.md noting what is known so far
-   - Update STATUS.md: refine hypothesis, list specific open questions, suggest next data to collect
-   - Tell the human what gaps remain and what evidence would help
+   - Update STATUS.md: refine the question, list specific gaps, suggest next data to collect
+   - Tell the human what is missing and what evidence would help
 7. If code paths are mentioned in BRIEF.md, read relevant files in REPOS/ to correlate evidence to code
 
 ## Rules
