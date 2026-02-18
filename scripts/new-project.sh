@@ -47,10 +47,10 @@ cat > "$PROJECT_DIR/STATUS.md" << EOF
 | $(date +%Y-%m-%d) | init | Project created from template |
 EOF
 
-# Create git branch (redirect stderr to stdout -- git checkout writes
-# success messages to stderr which causes false failures on Windows Git)
+# Create git branch (git checkout writes success messages to stderr,
+# which causes false failures with set -e on Windows Git)
 cd "$ROOT_DIR"
-git checkout -b "inv/$TICKET_ID" 2>&1 || git checkout "inv/$TICKET_ID" 2>&1
+git checkout -b "inv/$TICKET_ID" 2>&1 || git checkout "inv/$TICKET_ID" 2>&1 || true
 
 echo "Created investigation project: $PROJECT_DIR"
 echo "Branch: inv/$TICKET_ID"
