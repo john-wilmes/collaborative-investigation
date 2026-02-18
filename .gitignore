@@ -1,0 +1,14 @@
+# Cloned codebases (read-only, not part of investigation artifacts)
+REPOS/
+
+# Raw evidence stays local -- may contain unsanitized data
+PROJECTS/*/EVIDENCE/
+
+# Python / Presidio
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db

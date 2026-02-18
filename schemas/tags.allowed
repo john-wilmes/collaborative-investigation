@@ -1,0 +1,28 @@
+# Root Cause
+root-cause:data-integrity
+root-cause:race-condition
+root-cause:config-drift
+root-cause:auth-failure
+root-cause:integration-break
+root-cause:performance
+root-cause:resource-exhaustion
+
+# Area
+area:api
+area:worker
+area:database
+area:auth
+area:billing
+area:ui
+
+# Severity
+severity:critical
+severity:high
+severity:medium
+severity:low
+
+# Status
+status:investigating
+status:root-cause-identified
+status:resolved
+status:escalated

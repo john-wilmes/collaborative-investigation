@@ -1,0 +1,48 @@
+# Collaborative Investigation Framework
+
+## Project Overview
+
+Git-based framework for SaaS technical teams to run structured investigations of customer-reported issues, assisted by lightweight AI agents (Sonnet, Composer 1.5). The SaaS is an adjunct to many EHRs. Zero runtime dependencies beyond Presidio for PHI sanitization.
+
+## Core Principle
+
+State in files, not in conversations. Agents are stateless workers. They read structured files, do one thing, write structured output, and exit. No long conversations, no multi-phase sessions.
+
+## Key Commands
+
+```
+scripts/new-project.sh <ticket-id>    # Create investigation from template
+git commit                             # Auto-sanitizes PHI via pre-commit hook
+```
+
+## Slash Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/investigate <ticket>` | Start new investigation, create project from template |
+| `/collect <source>` | Structured evidence gathering (one item per invocation) |
+| `/synthesize` | Condense evidence into findings, update hypothesis |
+| `/close` | Finalize, sanitize, push branch |
+
+## Token Discipline
+
+- CLAUDE.md must stay under 50 lines of rules
+- `.claude/rules/` files use glob patterns to load only when relevant
+- BRIEF.md is 10 lines max (human distills the ticket)
+- STATUS.md is the investigation log and handoff mechanism
+- Evidence files use templates with 3-line observation max
+- One slash command = one phase = one session
+- Agents never free-explore REPOS/ -- BRIEF.md scopes them to specific paths
+
+## PHI Sanitization
+
+Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio, replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. MRNs scrubbed only when labeled in context (e.g., "MRN: 12345"), not bare IDs.
+
+## What Gets Pushed
+
+`inv/<ticket-id>` branches containing BRIEF.md, FINDINGS.md, and .tags. EVIDENCE/ stays local (gitignored).
+
+## Commit Rules
+
+- Work on `inv/<ticket-id>` branches for investigations
+- Never commit to main directly except for framework changes

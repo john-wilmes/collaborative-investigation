@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Pre-commit hook for collaborative-investigation.
+# 1. Runs PHI sanitization on staged BRIEF.md and FINDINGS.md files
+# 2. Validates .tags files against schemas/tags.allowed
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+TAGS_ALLOWED="$ROOT_DIR/schemas/tags.allowed"
+SANITIZE_SCRIPT="$ROOT_DIR/scripts/sanitize.sh"
+
+EXIT_CODE=0
+
+# --- PHI Sanitization ---
+# Find staged BRIEF.md and FINDINGS.md files
+SANITIZE_FILES=()
+while IFS= read -r file; do
+    case "$file" in
+        */BRIEF.md|*/FINDINGS.md)
+            SANITIZE_FILES+=("$ROOT_DIR/$file")
+            ;;
+    esac
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+if [ ${#SANITIZE_FILES[@]} -gt 0 ] && [ -x "$SANITIZE_SCRIPT" ]; then
+    "$SANITIZE_SCRIPT" "${SANITIZE_FILES[@]}"
+
+    # Re-stage sanitized files
+    for file in "${SANITIZE_FILES[@]}"; do
+        git add "$file"
+    done
+fi
+
+# --- Tags Validation ---
+while IFS= read -r tags_file; do
+    FULL_PATH="$ROOT_DIR/$tags_file"
+    if [ ! -f "$FULL_PATH" ]; then
+        continue
+    fi
+
+    # Load allowed tags (skip comments and blank lines)
+    ALLOWED=()
+    while IFS= read -r line; do
+        line="${line%%#*}"        # strip inline comments
+        line="${line// /}"        # strip spaces
+        [ -z "$line" ] && continue
+        ALLOWED+=("$line")
+    done < "$TAGS_ALLOWED"
+
+    # Validate each tag in the file
+    while IFS= read -r tag; do
+        tag="${tag// /}"
+        [ -z "$tag" ] && continue
+
+        FOUND=0
+        for allowed in "${ALLOWED[@]}"; do
+            if [ "$tag" = "$allowed" ]; then
+                FOUND=1
+                break
+            fi
+        done
+
+        if [ "$FOUND" -eq 0 ]; then
+            echo "Error: Invalid tag '$tag' in $tags_file" >&2
+            echo "Allowed tags are listed in schemas/tags.allowed" >&2
+            EXIT_CODE=1
+        fi
+    done < "$FULL_PATH"
+done < <(git diff --cached --name-only --diff-filter=ACM | grep '\.tags$' || true)
+
+exit $EXIT_CODE

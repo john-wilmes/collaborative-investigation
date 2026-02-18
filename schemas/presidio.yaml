@@ -1,0 +1,72 @@
+# Presidio PHI Sanitization Configuration
+# Maintained by compliance team. Agents never modify this file.
+#
+# Principle: auto-sanitize on commit, never reject.
+# Customer/org info is KEPT -- only patient data is scrubbed.
+
+analyzer:
+  # Built-in Presidio recognizers to enable
+  recognizers:
+    - PERSON           # Patient names -> [PATIENT_NAME]
+    - DATE_TIME        # Dates of birth -> [DOB] (context-aware)
+    - US_SSN           # Social Security Numbers -> [SSN]
+    - PHONE_NUMBER     # Patient phone numbers -> [PHONE]
+    - EMAIL_ADDRESS    # Patient email addresses -> [EMAIL]
+    - US_DRIVER_LICENSE # Driver's license numbers -> [DL_NUMBER]
+    - MEDICAL_LICENSE  # Medical license numbers -> [MED_LICENSE]
+
+  # Context-aware MRN detection
+  # Only scrub numbers that appear with MRN labels, not bare integers/GUIDs
+  custom_recognizers:
+    - name: ContextualMRN
+      supported_entity: MRN
+      patterns:
+        - name: labeled_mrn
+          regex: "(?i)\\bMRN[:\\s#]+\\d{4,10}\\b"
+          score: 0.9
+      context:
+        - mrn
+        - medical record
+        - patient id
+
+  # Entities to SKIP (keep in output)
+  deny_list_entities: []
+
+  # Organization/customer names are intentionally NOT scrubbed
+  # They provide essential investigation context
+
+anonymizer:
+  # Replacement placeholders by entity type
+  operators:
+    PERSON:
+      type: replace
+      new_value: "[PATIENT_NAME]"
+    DATE_TIME:
+      type: replace
+      new_value: "[DOB]"
+    US_SSN:
+      type: replace
+      new_value: "[SSN]"
+    PHONE_NUMBER:
+      type: replace
+      new_value: "[PHONE]"
+    EMAIL_ADDRESS:
+      type: replace
+      new_value: "[EMAIL]"
+    US_DRIVER_LICENSE:
+      type: replace
+      new_value: "[DL_NUMBER]"
+    MEDICAL_LICENSE:
+      type: replace
+      new_value: "[MED_LICENSE]"
+    MRN:
+      type: replace
+      new_value: "[MRN]"
+
+# Organization-specific EHR patterns
+# Add custom recognizers here for your EHR system's ID formats
+ehr_patterns:
+  # Example:
+  # - name: epic_mrn
+  #   regex: "\\bE\\d{7}\\b"
+  #   context: ["epic", "patient"]
