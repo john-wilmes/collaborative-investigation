@@ -9,11 +9,13 @@ analyzer:
   recognizers:
     - PERSON           # Patient names -> [PATIENT_NAME]
     - DATE_TIME        # General dates -> [DATE] (investigation timestamps kept readable)
+    - DOB              # Date of birth (custom, context-aware) -> [DOB]
     - US_SSN           # Social Security Numbers -> [SSN]
     - PHONE_NUMBER     # Patient phone numbers -> [PHONE]
     - EMAIL_ADDRESS    # Patient email addresses -> [EMAIL]
     - US_DRIVER_LICENSE # Driver's license numbers -> [DL_NUMBER]
     - MEDICAL_LICENSE  # Medical license numbers -> [MED_LICENSE]
+    - MRN              # Medical record numbers (custom, context-aware) -> [MRN]
 
   # Context-aware MRN detection
   # Only scrub numbers that appear with MRN labels, not bare integers/GUIDs
@@ -35,8 +37,14 @@ analyzer:
     - name: ContextualDOB
       supported_entity: DOB
       patterns:
-        - name: labeled_dob
+        - name: labeled_dob_numeric
           regex: "(?i)(?:DOB|date of birth|born on|birth date|birthdate)[:\\s]+\\d{1,2}[/\\-]\\d{1,2}[/\\-]\\d{2,4}"
+          score: 0.95
+        - name: labeled_dob_iso
+          regex: "(?i)(?:DOB|date of birth|born on|birth date|birthdate)[:\\s]+\\d{4}[/\\-]\\d{1,2}[/\\-]\\d{1,2}"
+          score: 0.95
+        - name: labeled_dob_text_month
+          regex: "(?i)(?:DOB|date of birth|born on|birth date|birthdate)[:\\s]+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\s+\\d{1,2},?\\s+\\d{4}"
           score: 0.95
       context:
         - dob
