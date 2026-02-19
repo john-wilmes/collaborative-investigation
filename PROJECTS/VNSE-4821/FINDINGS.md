@@ -27,7 +27,7 @@ Evidence 005 identified a secondary risk: if `createEPDProfile` returned a succe
 4. Evidence 004: `Promise.allSettled` failure accounting ensures 53 failures would surface in `result.failed` and be visible in the UI's "Failed Rows" table. Error messages were available to the customer on the import completion screen.
 5. Evidence 005: Silent `epdProfileId` omission (lines 332-334) is a real secondary risk for future imports, but did not affect this event because no EPDProfile was successfully created.
 6. Evidence 006 (Datadog APM): 53 error traces for `createEPDProfile`, all returning "Not Authorized to access createEPDProfile on type Mutation." 47 successful `createListing` traces for non-EPD rows. Timestamps 14:12-14:14 UTC, 2026-02-17. No successful EPD traces in this window.
-7. Evidence 007: Identified the authorization rule as `allow.owner()` -- partially correct. Code review of `REPOS/vnse/amplify/data/resource.ts` lines 120-123 reveals the actual rule is stricter: `allow.group("admins")` for create, not owner. Regular authenticated users cannot create EPDProfiles under any circumstances.
+7. Evidence 007: Initial inspection suggested the authorization rule was `allow.owner()`. Code review of `REPOS/vnse/amplify/data/resource.ts` lines 120-123 confirmed the create operation uses `allow.group("admins")`, not owner. Regular authenticated users cannot create EPDProfiles under any circumstances.
 8. Evidence 008: CSV breakdown -- 53 BULL, 47 non-BULL (12 HEIFER, 18 STEER, 11 COW, 6 REGISTERED_HEIFER). The 6 REGISTERED_HEIFERs succeeded because their EPD columns were empty, bypassing the EPD mutation path. This reconciles the 53/47 split exactly.
 
 ## Implications

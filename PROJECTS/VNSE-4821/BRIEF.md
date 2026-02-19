@@ -14,4 +14,4 @@ Affects any customer using CSV import for breeding stock with EPD data (BULL and
 - REPOS/vnse/src/pages/ImportListingsPage.tsx (UI that drives the import)
 
 ## Starting Point
-The import uses parallel batches (concurrency=5). EPD profiles are created via raw GraphQL mutation as a workaround for an Amplify serialization bug. Suspect error handling in the GraphQL path is swallowing failures and stopping batch processing.
+The import uses parallel batches (concurrency=5). EPD profiles are created via raw GraphQL mutation as a workaround for an Amplify serialization bug. Initial hypothesis was that error handling in the GraphQL path was swallowing failures. Confirmed cause: `allow.group("admins")` authorization rule on EPDProfile blocks creation by regular authenticated users.
