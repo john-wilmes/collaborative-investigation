@@ -17,7 +17,7 @@ $ARGUMENTS is the ticket-id.
    - FINDINGS.md must have Question and Answer filled in (not just template placeholders)
    - Evidence Summary should be filled in. If the investigation is being closed without evidence (answered without data collection, or abandoned), the investigator should put "N/A" or a brief explanation in Evidence Summary.
    - If incomplete, tell the human what is missing and stop
-3. Run the classifier: use the Task tool to spawn a Haiku subagent with this prompt:
+3. Run the classifier: use the Task tool to spawn a Haiku subagent. Before passing the prompt, substitute the actual value of $TICKET_ID into all paths below:
 
    "You are a classification agent. Read the investigation files and write a natural language classification for the Classification section of FINDINGS.md.
 
@@ -42,7 +42,7 @@ $ARGUMENTS is the ticket-id.
    - Update STATUS.md: add final history entry with "Closed" phase
    - Stage PROJECTS/$TICKET_ID/BRIEF.md, PROJECTS/$TICKET_ID/FINDINGS.md, and PROJECTS/$TICKET_ID/STATUS.md
    - Do NOT stage EVIDENCE/ (gitignored, enforced by pre-commit hook)
-7. Get the ticket-id from the branch name: `git rev-parse --abbrev-ref HEAD`, strip the "inv/" prefix. If it does not match $TICKET_ID, warn the human.
+7. Get the ticket-id from the branch name: `git rev-parse --abbrev-ref HEAD`, strip the "inv/" prefix. If it does not match $TICKET_ID, tell the human and stop. They should either check out the correct branch or use the ticket-id that matches the current branch.
 8. Commit with message: "investigation: $TICKET_ID - <one-line summary of the answer from FINDINGS.md>"
    - The pre-commit hook will run PHI sanitization and re-stage automatically
 9. Post-commit verification: read the committed FINDINGS.md via `git show HEAD:PROJECTS/$TICKET_ID/FINDINGS.md`. Confirm that Question, Answer, and Classification sections each contain at least one non-placeholder sentence. If sanitization degraded the content, warn the human.

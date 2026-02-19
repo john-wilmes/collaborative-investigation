@@ -16,10 +16,12 @@ $ARGUMENTS is the ticket-id.
 2. Check the current branch: `git rev-parse --abbrev-ref HEAD`. If it is an inv/* branch different from inv/$TICKET_ID, warn the human. Check for unpushed commits on the current branch (`git log @{u}..HEAD`) and mention them if any exist.
 3. Fetch the branch: `git fetch origin inv/$TICKET_ID`
    - If the branch does not exist on origin, tell the human and stop
-4. Check out the branch: `git checkout inv/$TICKET_ID`
+4. Check if a local branch `inv/$TICKET_ID` already exists (`git rev-parse --verify inv/$TICKET_ID 2>/dev/null`):
+   - If it exists locally, compare with remote: `git rev-parse inv/$TICKET_ID` vs `git rev-parse origin/inv/$TICKET_ID`. If they differ, tell the human and fast-forward: `git checkout inv/$TICKET_ID && git merge --ff-only origin/inv/$TICKET_ID`. If fast-forward fails, stop and let the human resolve.
+   - If it does not exist locally: `git checkout -b inv/$TICKET_ID origin/inv/$TICKET_ID`
    - If there are local changes that would be overwritten, tell the human and stop. Suggest: commit or stash current changes first (`git stash`), then rerun /reopen.
 5. Verify PROJECTS/$TICKET_ID/ exists with BRIEF.md, FINDINGS.md, and STATUS.md
-   - If STATUS.md is missing (older investigation closed before STATUS.md was pushed), create one using the format from scripts/new-project.sh. Set Current Understanding from FINDINGS.md Answer section. Leave Open Questions empty. In History, add two rows: one with date "unknown" and phase "init" and summary "Original investigation (pre-STATUS.md era)", and one with today's date and phase "reopen".
+   - If STATUS.md is missing (older investigation closed before STATUS.md was pushed), create one using the format from scripts/new-project.sh. Set Current Understanding from FINDINGS.md Answer section if present and non-empty; otherwise use "See FINDINGS.md for original conclusion". Leave Open Questions empty. In History, add two rows: one with date "unknown" and phase "init" and summary "Original investigation (pre-STATUS.md era)", and one with today's date and phase "reopen".
 6. Create PROJECTS/$TICKET_ID/EVIDENCE/ directory if it does not exist (was gitignored)
 7. Update STATUS.md:
    - Add a history entry: current date, "reopen" phase, "Investigation reopened"
@@ -29,7 +31,7 @@ $ARGUMENTS is the ticket-id.
    - What was found (from FINDINGS.md Answer section)
    - The full investigation history (from STATUS.md)
    - What evidence is NOT available (EVIDENCE/ was local-only and not preserved)
-9. Ask the investigator: what prompted reopening? Update the STATUS.md Current Understanding and Open Questions based on their answer. If the reopening changes the original question, advise the investigator to update BRIEF.md before proceeding with /collect.
+9. Ask the investigator: what prompted reopening? Update the STATUS.md Current Understanding and Open Questions based on their answer. If the reopening changes the original question, ask the investigator whether they want to update BRIEF.md themselves before proceeding with /collect. The agent must not modify BRIEF.md directly.
 
 ## Rules
 - Do not modify FINDINGS.md or BRIEF.md during reopen -- those reflect the prior conclusion

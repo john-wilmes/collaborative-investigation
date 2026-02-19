@@ -13,7 +13,7 @@ Parse $ARGUMENTS: the first word is the ticket-id, everything after is the sourc
 ## Steps
 
 1. Set TICKET_ID to the first word of $ARGUMENTS. Read PROJECTS/$TICKET_ID/STATUS.md and PROJECTS/$TICKET_ID/BRIEF.md. If they do not exist, tell the human and stop.
-2. Determine the next evidence number: count existing files in PROJECTS/$TICKET_ID/EVIDENCE/. If EVIDENCE/ is empty (e.g., after /reopen), check FINDINGS.md Evidence Summary for the highest referenced evidence number and continue from there.
+2. Determine the next evidence number: count existing files in PROJECTS/$TICKET_ID/EVIDENCE/ and check FINDINGS.md Evidence Summary for the highest referenced evidence number. Use the maximum of these two values, plus one, as the next evidence number.
 3. Read schemas/evidence.template.md for the template
 4. If the remaining arguments name a data source (e.g., "datadog", "mongodb"):
    - Read schemas/toolkit.md for the source's capabilities

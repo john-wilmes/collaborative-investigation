@@ -31,11 +31,11 @@ State in files, not in conversations. Agents are stateless workers. They read st
 
 ## Classification
 
-At `/close` time, a Haiku classifier reads all project files and writes a natural language classification into FINDINGS.md. No fixed taxonomy -- the classifier describes what kind of investigation it was, what was learned, which systems were involved, the significance, and open threads. Investigator approves or overrides. Prior art search is done by agents reading FINDINGS.md across branches.
+At `/close` time, a Haiku classifier reads all project files and writes a natural language classification into FINDINGS.md. No fixed taxonomy -- the classifier describes what kind of investigation it was, what was learned, which systems were involved, the significance, and open threads. Investigator approves or overrides.
 
 ## PHI Sanitization
 
-Auto-sanitize on commit, never reject. Pre-commit hook runs Presidio on BRIEF.md, FINDINGS.md, and STATUS.md. Replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, commit proceeds. Customer/org info is kept -- only patient data is scrubbed. Pre-commit rejects EVIDENCE/ files from staging.
+Pre-commit hook runs Presidio on BRIEF.md, FINDINGS.md, and STATUS.md. Replaces patient PHI with typed placeholders (`[PATIENT_NAME]`, `[DATE]`, `[DOB]`, `[SSN]`), re-stages, and allows commit to proceed. Customer/org info is kept -- only patient data is scrubbed. Pre-commit rejects EVIDENCE/ files from staging to enforce local-only evidence.
 
 ## What Gets Pushed
 

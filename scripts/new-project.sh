@@ -50,7 +50,7 @@ EOF
 # Create git branch (git checkout writes success messages to stderr,
 # which causes false failures with set -e on Windows Git)
 cd "$ROOT_DIR"
-git checkout -b "inv/$TICKET_ID" 2>&1 || git checkout "inv/$TICKET_ID" 2>&1 || true
+git checkout -b "inv/$TICKET_ID" 2>&1 || git checkout "inv/$TICKET_ID" 2>&1
 
 echo "Created investigation project: $PROJECT_DIR"
 echo "Branch: inv/$TICKET_ID"

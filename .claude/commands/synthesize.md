@@ -34,3 +34,4 @@ $ARGUMENTS is the ticket-id.
 - Keep customer/org names, sanitize patient PHI
 - This is analysis, not data collection -- do not ask the human for new data here
 - Do NOT write the Classification section -- that happens at /close time
+- Each /synthesize invocation overwrites FINDINGS.md -- manual edits will be lost unless incorporated into evidence first
