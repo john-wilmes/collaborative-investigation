@@ -9,11 +9,13 @@ analyzer:
   recognizers:
     - PERSON           # Patient names -> [PATIENT_NAME]
     - DATE_TIME        # General dates -> [DATE] (investigation timestamps kept readable)
+    - DOB              # Date of birth (custom, context-aware) -> [DOB]
     - US_SSN           # Social Security Numbers -> [SSN]
     - PHONE_NUMBER     # Patient phone numbers -> [PHONE]
     - EMAIL_ADDRESS    # Patient email addresses -> [EMAIL]
     - US_DRIVER_LICENSE # Driver's license numbers -> [DL_NUMBER]
     - MEDICAL_LICENSE  # Medical license numbers -> [MED_LICENSE]
+    - MRN              # Medical record numbers (custom, context-aware) -> [MRN]
 
   # Context-aware MRN detection
   # Only scrub numbers that appear with MRN labels, not bare integers/GUIDs
